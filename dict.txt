@@ -1,0 +1,2 @@
+{'documents': [Document(id=3c086a382f269032a2aa63177a4c609094be8b378b3e5127abeb7d2f74df287f, content: 'Blink-182
+Blink-182	is	an	American	rock	band	formed	in	Poway,	California,	in	1992.	Their	current	and...', meta: {'file_path': 'content/docs/Blink-182.pdf'})]}
