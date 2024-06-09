@@ -1,38 +1,3 @@
-#from IPython.display import Image
-from pprint import pprint
-import torch
-#import rich
-import random
-import wikipedia
-from haystack.dataclasses import Document
-
-favourite_bands="""Audioslave
-Blink-182
-Dire Straits
-Evanescence
-Green Day
-Muse (band)
-Nirvana (band)
-Sum 41
-The Cure
-The Smiths
-Dragonforce
-Nissan Skyline GT-R
-Gloryhammer
-Nightwish
-Linkin Park""".split("\n")
-
-raw_docs=[]
-
-for title in favourite_bands:
-    page = wikipedia.page(title=title, auto_suggest=False)
-    doc = Document(content=page.content, meta={"title": page.title, "url":page.url})
-    raw_docs.append(doc)
-
-print(raw_docs)
-print(type(raw_docs))
-print(type(raw_docs[0]))
-
 # Indexing Pipeline
 from haystack import Pipeline
 from haystack.document_stores.in_memory import InMemoryDocumentStore
@@ -41,9 +6,39 @@ from haystack.components.embedders import SentenceTransformersTextEmbedder, Sent
 from haystack.components.writers import DocumentWriter
 from haystack.document_stores.types import DuplicatePolicy
 from haystack.utils import ComponentDevice
+from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
+from haystack.components.converters import PyPDFToDocument
+from pathlib import Path
+import os
 
-document_store = InMemoryDocumentStore(embedding_similarity_function="cosine")
+raw_docs = []
+
+converter = PyPDFToDocument()
+
+# Path to the directory containing PDF files
+pdf_directory = Path("content/docs/")
+
+# List all files in the directory
+pdf_files = os.listdir(pdf_directory)
+
+# Filter only PDF files
+pdf_files = [file for file in pdf_files if file.lower().endswith(".pdf")]
+
+# Loop through each PDF file
+for pdf_file in pdf_files:
+  pdf_path = pdf_directory / pdf_file
+  doc = converter.run(sources=[pdf_path])
+  raw_docs.append(doc['documents'][0])
+
+document_store = QdrantDocumentStore(
+    path="qdrant/storage_local",
+    index="Document",
+    embedding_dim=1024,
+    recreate_index=True,
+    hnsw_config={"m": 16, "ef_construct": 64}  # Optional
+)
 indexing = Pipeline()
+#indexing.add_component("converter", PyPDFToDocument())
 indexing.add_component("cleaner", DocumentCleaner())
 indexing.add_component("splitter", DocumentSplitter(split_by='sentence', split_length=2))
 indexing.add_component("doc_embedder", SentenceTransformersDocumentEmbedder(model="thenlper/gte-large",
@@ -58,5 +53,5 @@ indexing.connect("doc_embedder", "writer")
 indexing.run({"cleaner":{"documents":raw_docs}})
 len(document_store.filter_documents())
 document_store.filter_documents()[0].meta
-pprint(document_store.filter_documents()[0])
+print(document_store.filter_documents()[0])
 print(len(document_store.filter_documents()[0].embedding)) # embedding size
