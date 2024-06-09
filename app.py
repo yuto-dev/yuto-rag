@@ -72,8 +72,8 @@ def get_generative_answer(query):
   answer = results["llm"]["replies"][0]
   print(answer)
 
-@app.get("/v1/tanyaGPT")
-async def tanya(query: str):
+@app.get("/v1/completions")
+async def completions(query: str):
 
     results = rag.run({
       "text_embedder": {"text": query},
