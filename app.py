@@ -35,7 +35,6 @@ generator.warm_up()
 from haystack.components.builders import PromptBuilder
 
 prompt_template = """<|system|>Using the information contained in the context, give a comprehensive answer to the question.
-If the answer is contained in the context, also report the source file path.
 If the answer cannot be deduced from the context, do not give an answer.</s>
 <|user|>
 Context:

@@ -9,7 +9,7 @@ c = conn.cursor()
 @app.get("/last_id")
 async def get_last_id():
     # Execute a query to fetch the ID of the latest entry
-    c.execute("SELECT MAX(ID) FROM chatHistory")
+    c.execute("SELECT MAX(ID) FROM chatHistory_en")
     last_id = c.fetchone()[0]  # Fetch the first column of the result
 
     return {"id": last_id}
@@ -23,7 +23,7 @@ class ChatData(BaseModel):
 async def insert_chat(data: ChatData):
 
     c.execute("""
-        INSERT INTO chatHistory (prompt, chatID)
+        INSERT INTO chatHistory_en (prompt, chatID)
         VALUES (?, ?)
     """, (data.prompt, data.chatID))
     conn.commit()
@@ -36,7 +36,7 @@ class IdQuery(BaseModel):
 @app.get("/get_prompt")
 async def get_prompt(prompt_query: IdQuery):
     # Query the database for the "prompt" column of the entry with the given ID
-    c.execute("SELECT prompt FROM chatHistory WHERE id = ?", (prompt_query.id,))
+    c.execute("SELECT prompt FROM chatHistory_en WHERE id = ?", (prompt_query.id,))
     prompt_result = c.fetchone()
 
     if prompt_result:
@@ -49,7 +49,7 @@ async def get_prompt(prompt_query: IdQuery):
 @app.get("/get_flagA")
 async def get_flagA(prompt_query: IdQuery):
     # Query the database for the "prompt" column of the entry with the given ID
-    c.execute("SELECT flagA FROM chatHistory WHERE id = ?", (prompt_query.id,))
+    c.execute("SELECT flagA FROM chatHistory_en WHERE id = ?", (prompt_query.id,))
     prompt_result = c.fetchone()
 
     if prompt_result:
@@ -62,7 +62,7 @@ async def get_flagA(prompt_query: IdQuery):
 @app.get("/get_result")
 async def get_result(prompt_query: IdQuery):
     # Query the database for the "prompt" column of the entry with the given ID
-    c.execute("SELECT * FROM chatHistory WHERE id = ?", (prompt_query.id,))
+    c.execute("SELECT * FROM chatHistory_en WHERE id = ?", (prompt_query.id,))
     prompt_result = c.fetchone()
 
     if prompt_result:
@@ -83,7 +83,7 @@ class UpdateData(BaseModel):
 async def update_entry(data: UpdateData):
 
     # Update the entry in the database
-    c.execute("UPDATE chatHistory SET response = ?, source1 = ?, source2 = ?, flagA = ? WHERE id = ?", 
+    c.execute("UPDATE chatHistory_en SET response = ?, source1 = ?, source2 = ?, flagA = ? WHERE id = ?", 
               (data.response, data.source1, data.source2, data.flagA, data.id))
     conn.commit()
 
@@ -98,7 +98,7 @@ class flagBData(BaseModel):
 async def update_entry(data: flagBData):
 
     # Update the entry in the database
-    c.execute("UPDATE chatHistory SET flagB = ?, duration = ? WHERE id = ?", 
+    c.execute("UPDATE chatHistory_en SET flagB = ?, duration = ? WHERE id = ?", 
               (data.flagB, data.duration, data.id))
     conn.commit()
 

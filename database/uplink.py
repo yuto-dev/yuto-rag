@@ -2,11 +2,14 @@ import sqlite3
 import requests
 import json
 import base64
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+user = os.getenv('USER')
+password = os.getenv('PASSWORD')
 
 dbURL = "http://localhost:8003"
-
-user = 'REPLACE'
-password = 'WPAPPLICATIONPASSWORD'
 
 def get_chat_entries_above_id(db_file, min_id):
     # Connect to the SQLite database
@@ -14,7 +17,7 @@ def get_chat_entries_above_id(db_file, min_id):
     cursor = conn.cursor()
 
     # Select entries from chatHistory table where ID is higher than min_id
-    cursor.execute("SELECT * FROM chatHistory WHERE ID > ? AND flagA = 1", (min_id,))
+    cursor.execute("SELECT * FROM chatHistory_en WHERE ID > ? AND flagA = 1", (min_id,))
     
     # Fetch all the rows and store them in a list
     entries = cursor.fetchall()

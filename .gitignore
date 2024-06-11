@@ -1,0 +1,5 @@
+# .gitignore
+.env
+content/zephyr-7b-beta.Q5_K_S.gguf
+content/docs/*
+database/chat.db

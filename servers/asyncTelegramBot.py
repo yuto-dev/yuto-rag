@@ -5,8 +5,13 @@ import json
 from datetime import datetime as rolex
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
+import os
+from dotenv import load_dotenv
 
-tokenKey = "6927922706:AAGUxgRovqD2zZsyFMStavegMExOqdnB_wc"
+
+load_dotenv()
+tokenKey = os.getenv('TOKEN_KEY')
+
 queueURL = "http://localhost:8000"
 dbURL = "http://localhost:8003"
 
@@ -17,12 +22,13 @@ logging.basicConfig(
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot and I'm online, please talk to me!")
+    message = "I am KayuMerantiBot and I am capable of retrieving information from documents. My module status is:\n" + "\nBahasa Indonesia PrivateGPT: *OFFLINE*\n" + "English Haystack: *ONLINE*\n" + "\nType **/help** for instructions on how to use me!"
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='Markdown')
 
 
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    message = "Halo, saya KayuMerantiBot. Untuk memulai, silahkan ketik /prompt lalu lanjutkan dengan pertanyaan yang ada ingin anda tanyakan. \n" + "\nContoh: /prompt Apa yang membuat langit berwarna biru?"
+    bookList = "- *Emotional Intelligence* by Daniel Goleman\n- *Influence: The Psychology of Persuasion* by Robert B. Cialdini\n- *Nudge: Improving Decisions About Health, Wealth, and Happiness* by Richard H. Thaler and Cass R. Sunstein\n- *Predictably Irrational* by Dan Ariely\n- *The Social Animal* by Elliot Aronson\n- *Thinking, Fast and Slow* by Daniel Kahneman"
+    message = "Hi, I am KayuMerantiBot! To ask a question, please type /prompt followed by your question. \n" + "\nExample: /prompt What changes do I need in my personality to make friends easily?\n" + "\nMy current vector database contains information on **human psychology**, I would be happy to help with any questions you have about the topic. Feel free to ask!\n" + "\nPlease note that I am a QA chatbot, meaning my answers will be based solely on your current question and will not take previous messages into account." + "\n\n List of documents in my database: \n" + bookList
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='Markdown')
 
 async def prompt(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -104,7 +110,7 @@ async def send_results_to_user(context, chat_id, argument, gptResult, gptSource,
     timeTaken = "{:02}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds))
     timeTakenMessage = "*Time taken: " + timeTaken + " (HH:MM:SS)*"
 
-    responseMessage = formattedResponse + "\n" + formattedSource + "\n" + stopTime + "\n" + timeTakenMessage
+    responseMessage = formattedResponse + "\n" + stopTime + "\n" + timeTakenMessage
     
     updateData = {
                     "id": entryID,

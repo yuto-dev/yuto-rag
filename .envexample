@@ -1,0 +1,4 @@
+# .env
+TOKEN_KEY=your_telegram_token_key_here
+USER=wp_username
+PASSWORD=wp_app_password

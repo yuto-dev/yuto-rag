@@ -1,7 +1,7 @@
 import requests
 
-url = "http://127.0.0.1:8001/v1/tanyaGPT"  # Replace this with your actual endpoint URL
-query = "What are the most popular DragonForce albums?"  # Replace this with your query
+url = "http://127.0.0.1:8001/v1/completions"  # Replace this with your actual endpoint URL
+query = "What changes do I need in my personality to make friends easily?"  # Replace this with your query
 
 params = {"query": query}
 
