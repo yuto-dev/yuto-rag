@@ -1,1 +1,1 @@
-# qna-gpt
+# yuto-rag
